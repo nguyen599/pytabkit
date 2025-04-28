@@ -10,12 +10,9 @@ from pytabkit.models.training.nn_creator import get_realmlp_auto_batch_size
 
 try:
     import lightning.pytorch as pl
-    from lightning.pytorch import Trainer, seed_everything
-
-    
 except ImportError:
     import pytorch_lightning as pl
-seed_everything(42, workers=True)
+
 import logging
 
 from datetime import timedelta
@@ -97,14 +94,13 @@ class NNAlgInterface(AlgInterface):
 
         max_time = None if interface_resources.time_in_seconds is None else timedelta(
             seconds=interface_resources.time_in_seconds)
-        print('fixed enable deterministic=True')
+
         self.trainer = pl.Trainer(
             max_time=max_time,
             accelerator=pl_accelerator,
             devices=pl_devices,
             callbacks=self.model.create_callbacks(),
             max_epochs=n_epochs,
-            deterministic=True,
             enable_checkpointing=False,
             enable_progress_bar=False,
             num_sanity_val_steps=0,
